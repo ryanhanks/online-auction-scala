@@ -53,7 +53,7 @@ object ItemStatus extends Enumeration {
 
   implicit val format: Format[Value] = enumFormat(this)
   implicit val pathParamSerializer: PathParamSerializer[Status] =
-    PathParamSerializer.required("itemStatus")(withName)(_.toString)
+    PathParamSerializer.required("status")(withName)(_.toString)
 }
 
 case class ItemSummary(

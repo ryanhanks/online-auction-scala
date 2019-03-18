@@ -35,7 +35,7 @@ object Filters {
 
 }
 
-case class ItemStatusFilter(itemStatus: ItemStatus.Status) extends Filter
+case class ItemStatusFilter(status: ItemStatus.Status) extends Filter
 
 case class KeywordsFilter(multi_match: Match) extends Filter
 

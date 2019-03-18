@@ -1,0 +1,95 @@
+@import com.example.auction.item.api.ItemStatus
+@import com.example.auction.item.api.ItemSummary
+@import com.example.auction.search.api.SearchItem
+@import com.example.auction.utils
+@import controllers.Currency
+@import helper._
+@import controllers.{Currency => Currencies}
+
+@import java.util.Locale
+
+@import com.example.auction.utils.PaginatedSequence
+@(showInlineInstruction: Boolean,
+        form: Form[SearchItemsForm],
+        results: PaginatedSequence[SearchItem]
+//        sear
+//        status: ItemStatus.Status, pagingState: utils.PagingState[ItemSummary]
+)(implicit nav: Nav, request: RequestHeader)
+
+@main(Messages("searchItems")){
+    <h2>@Messages("searchItems")</h2>
+    @if(showInlineInstruction) {
+        <p>@Messages("instruction.search")</p>
+
+        <p>@Html(Messages("instruction.enableSearch", "<a href=\"https://github.com/lagom/online-auction-scala/blob/master/README.md\">README.md</a>"))</p>
+    }
+    @foundationForm(form, routes.SearchController.search()) {
+        <div class="row">
+            <div class="medium-6 columns">
+            @inputText(form("keywords"))
+            </div>
+        </div>
+        <div class="column row">
+            @inputText(form("maximumPrice"), 'type -> "number", 'min -> 0, 'value -> form("maximumPrice").value)
+            @select(
+                field = form("currency"),
+                options = Currencies.values.map(c => c.name -> c.getDisplayName).sortBy(_._2)
+            )
+        </div>
+        <input type="hidden" id="pageNumber" value="@form("pageNumber").value" name="@form("pageNumber").name"/>
+
+        <input class="button" type="submit" value="@Messages("searchItems")"/>
+        @if(!results.isEmpty) {
+            <script>
+                    var updatePage = function(pageNum){
+                        document.getElementById("pageNumber").value = pageNum;
+                        document.getElementById("searchForm").submit();
+                    }
+            </script>
+            {@results.count
+            @if(results.count < results.pageSize ) {
+                <div>@Messages("searchFoundCount", results.count)</div>
+            } else {
+                <div>@Messages("searchFoundCountWithPagination", results.pageSize, results.count)</div>
+            }
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>@Messages("title")</th>
+                        <th>@Messages("status")</th>
+                        <th>@Messages("currentPrice")</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                @for(item <- results.items) {
+                    <tr>
+                        <td>
+                            <a href="
+                            ">@item.title</a>
+                        </td>
+                        <td>@item.itemStatus</td>
+                        <td>
+                        @if(
+                            item.itemStatus.equals(ItemStatus.Auction.toString)
+                                    && item.price.isDefined
+                                    && item.price.get > 0) {
+                            @Currency.valueOf(item.currencyId).format(item.price.get)
+                        } else {
+                            -
+                        }
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="4">@item.description</td>
+                    </tr>
+                    }
+                }
+                </tbody>
+            </table>
+        }
+
+    }
+
+}

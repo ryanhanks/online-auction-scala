@@ -3,7 +3,9 @@ package com.example.elasticsearch.request
 import play.api.libs.json.{Format, Json}
 
 
-case class BooleanQuery(must_not: Filter, must: Seq[Filter])
+case class BooleanQuery(
+//                         must_not: Filter,
+                         must: Seq[Filter])
 
 case class Query(bool: BooleanQuery)
 
