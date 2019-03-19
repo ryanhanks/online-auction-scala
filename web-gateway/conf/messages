@@ -78,4 +78,6 @@ instruction.enableSearch=Search functionality can be enabled by downloading and 
 keywords=Exact terms:
 maximumPrice=Maximum Price (set to '0' to disable filter)
 currency=
+searchFoundCount={0} items found
+searchFoundCountWithPagination=Displaying {0} of {1} items found
 

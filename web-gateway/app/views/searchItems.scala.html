@@ -12,11 +12,9 @@
 @(showInlineInstruction: Boolean,
         form: Form[SearchItemsForm],
         results: PaginatedSequence[SearchItem]
-//        sear
-//        status: ItemStatus.Status, pagingState: utils.PagingState[ItemSummary]
 )(implicit nav: Nav, request: RequestHeader)
 
-@main(Messages("searchItems")){
+@main(Messages("searchItems")) {
     <h2>@Messages("searchItems")</h2>
     @if(showInlineInstruction) {
         <p>@Messages("instruction.search")</p>
@@ -41,13 +39,13 @@
         <input class="button" type="submit" value="@Messages("searchItems")"/>
         @if(!results.isEmpty) {
             <script>
-                    var updatePage = function(pageNum){
+                    var updatePage = function (pageNum) {
                         document.getElementById("pageNumber").value = pageNum;
                         document.getElementById("searchForm").submit();
                     }
             </script>
-            {@results.count
-            @if(results.count < results.pageSize ) {
+
+            @if(results.count < results.pageSize) {
                 <div>@Messages("searchFoundCount", results.count)</div>
             } else {
                 <div>@Messages("searchFoundCountWithPagination", results.pageSize, results.count)</div>
@@ -63,33 +61,32 @@
                 </thead>
 
                 <tbody>
-                @for(item <- results.items) {
-                    <tr>
-                        <td>
-                            <a href="
-                            ">@item.title</a>
-                        </td>
-                        <td>@item.itemStatus</td>
-                        <td>
-                        @if(
-                            item.itemStatus.equals(ItemStatus.Auction.toString)
-                                    && item.price.isDefined
-                                    && item.price.get > 0) {
-                            @Currency.valueOf(item.currencyId).format(item.price.get)
-                        } else {
-                            -
-                        }
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="4">@item.description</td>
-                    </tr>
+                    @for(item <- results.items) {
+                        <tr>
+                            <td>
+                                <a href="@routes.ItemController.getItem(item.id)">@item.title</a>
+                            </td>
+                            <td>@item.itemStatus</td>
+                            <td>
+                            @if(
+                                item.itemStatus.equals(ItemStatus.Auction.toString)
+                                        && item.price.isDefined
+                                        && item.price.get > 0) {
+                                @Currency.valueOf(item.currencyId).format(item.price.get)
+                            } else {
+                                -
+                            }
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="4">@item.description</td>
+                        </tr>
                     }
                 }
-                </tbody>
-            </table>
-        }
-
+    </tbody>
+    </table>
     }
 
 }
+
+
